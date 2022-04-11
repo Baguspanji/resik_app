@@ -4,7 +4,9 @@ import 'package:resik_app/src/config/constans_assets.dart';
 import 'package:resik_app/src/config/constans_config.dart';
 import 'package:resik_app/src/config/size_config.dart';
 import 'package:resik_app/src/model/widget_model.dart';
+import 'package:resik_app/src/ui/nasabah/histori/index.dart';
 import 'package:resik_app/src/ui/nasabah/home/index.dart';
+import 'package:resik_app/src/ui/nasabah/profile/index.dart';
 import 'package:resik_app/src/ui/nasabah/sampah/index.dart';
 
 class NavUI extends StatefulWidget {
@@ -29,6 +31,11 @@ class _NavUIState extends State<NavUI> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    _tabController.addListener(() {
+      setState(() {
+        indexNav = _tabController.index;
+      });
+    });
   }
 
   @override
@@ -39,14 +46,49 @@ class _NavUIState extends State<NavUI> with SingleTickerProviderStateMixin {
         children: [
           HomeUI(),
           SampahUI(),
-          Center(
-            child: Text("History"),
-          ),
-          Center(
-            child: Text("Profile"),
-          ),
+          HistoriUI(),
+          ProfileUI(),
         ],
       ),
+      floatingActionButton: _tabController.index == 1 || indexNav == 1
+          ? FloatingActionButton(
+              onPressed: () {},
+              backgroundColor: secondaryColor,
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Icon(
+                      Icons.shopping_bag_outlined,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 6,
+                    child: Container(
+                      width: 16,
+                      height: 16,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withOpacity(0.8),
+                      ),
+                      child: Text(
+                        '2',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          : SizedBox(),
       bottomNavigationBar: Container(
         height: 70,
         width: width(context),

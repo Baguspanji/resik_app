@@ -141,3 +141,5 @@ void getToast(String text) {
     fontSize: 16.0,
   );
 }
+
+String capitalize(String s) => s[0].toUpperCase() + s.substring(1);

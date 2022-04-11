@@ -18,13 +18,20 @@ Widget customApp(BuildContext context, String title) {
         )
       ],
     ),
-    child: Text(
-      title,
-      style: TextStyle(
-        fontSize: 20,
-        color: Colors.white,
-        fontWeight: FontWeight.w500,
-      ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SizedBox(width: width(context) * 0.1),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        SizedBox(width: width(context) * 0.1),
+      ],
     ),
   );
 }
