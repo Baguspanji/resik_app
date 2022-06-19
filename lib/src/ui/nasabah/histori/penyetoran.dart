@@ -1,29 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:resik_app/src/config/constans_config.dart';
-import 'package:resik_app/src/config/size_config.dart';
+import 'package:resik_app/src/controller/histori_controller.dart';
+import 'package:resik_app/src/model/history_setor_model.dart';
+import 'package:resik_app/src/ui/nasabah/components/modal.dart';
+import 'package:resik_app/src/ui/nasabah/histori/modal_setor.dart';
 
 class Penyetoran extends StatelessWidget {
-  const Penyetoran({Key? key}) : super(key: key);
+  final historiCon = Get.find<HistoryController>();
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      children: [
-        _itemHistori(context, "Selasa , 12 Januari 2020", "pending"),
-        _itemHistori(context, "Selasa , 12 Januari 2020", "success"),
-        _itemHistori(context, "Selasa , 12 Januari 2020", "failed"),
-      ],
+    return Obx(() {
+      final history = historiCon.historySetor.value;
+
+      if (history.isEmpty) {
+        return Center(
+          child: Text('Tidak ada data'),
+        );
+      } else {
+        return ListView(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          children: [
+            ...history.map((e) {
+              return _itemHistori(context, e);
+            }).toList(),
+          ],
+        );
+      }
+    });
+  }
+
+  Future<void> showQR(BuildContext context, HistorySampahModel item) async {
+    Modals.showCupertinoModal(
+      context: context,
+      builder: ModalSetorUI(item: item),
     );
   }
 
-  Widget _itemHistori(BuildContext context, String date, String status) {
+  Widget _itemHistori(BuildContext context, HistorySampahModel item) {
     Color bg = Colors.white;
-    switch (status) {
+    bool isTrailing = false;
+    String title = 'Berhasil';
+
+    switch (item.status) {
       case 'pending':
-        bg = Colors.black12;
+        title = 'Dalam Proses';
+        isTrailing = true;
+        bg = Colors.greenAccent.shade100;
         break;
       case 'failed':
+        title = 'Proses Gagal';
         bg = Colors.red.withOpacity(0.2);
         break;
       default:
@@ -34,9 +61,12 @@ class Penyetoran extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: Colors.grey.shade300),
+        border: isTrailing
+            ? Border.all(color: bg)
+            : Border.all(color: Colors.grey.shade300),
       ),
       child: ListTile(
+        onTap: () => showQR(context, item),
         leading: Container(
           width: 40,
           height: 40,
@@ -54,19 +84,16 @@ class Penyetoran extends StatelessWidget {
             ),
           ),
         ),
-        title: Text(capitalize(status)),
+        title: Text(capitalize(title)),
         subtitle: Text(
-          date,
+          dateFormatEEEEdMMMMyyyy(DateTime.parse(item.createdAt ?? '')),
           style: TextStyle(
             fontSize: 12,
             color: Colors.black45,
             fontWeight: FontWeight.w400,
           ),
         ),
-        trailing: GestureDetector(
-          onTap: () {},
-          child: Icon(Icons.qr_code_outlined),
-        ),
+        trailing: isTrailing ? Icon(Icons.qr_code_outlined) : null,
       ),
     );
   }

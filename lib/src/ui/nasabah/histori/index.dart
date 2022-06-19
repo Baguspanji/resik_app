@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:resik_app/src/config/constans_config.dart';
 import 'package:resik_app/src/config/size_config.dart';
+import 'package:resik_app/src/controller/histori_controller.dart';
 import 'package:resik_app/src/ui/nasabah/components/custom_app.dart';
 import 'package:resik_app/src/ui/nasabah/histori/penarikan.dart';
 import 'package:resik_app/src/ui/nasabah/histori/penyetoran.dart';
@@ -11,6 +13,8 @@ class HistoriUI extends StatefulWidget {
 }
 
 class _HistoriUIState extends State<HistoriUI> {
+  final historiCon = Get.put(HistoryController());
+
   int indexNav = 0;
 
   List<String> listNav = [
@@ -22,6 +26,17 @@ class _HistoriUIState extends State<HistoriUI> {
     Penyetoran(),
     Penarikan(),
   ];
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  init() async {
+    historiCon.getHistory();
+    historiCon.getWidraw();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +65,11 @@ class _HistoriUIState extends State<HistoriUI> {
           ),
         ),
         Expanded(
-          child: listWidget[indexNav],
+          child: RefreshIndicator(
+            color: secondaryColor,
+            onRefresh: () => init(),
+            child: listWidget[indexNav],
+          ),
         )
       ],
     );

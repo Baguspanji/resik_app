@@ -127,7 +127,7 @@ class _ProfileUIState extends State<ProfileUI> {
                     alignment: Alignment.center,
                     child: ListTile(
                       title: Text('Saldo'),
-                      subtitle: Text(toRupiah(double.parse(user.saldo ?? '0'))),
+                      subtitle: Text(toRupiah(double.parse('${user.saldo}'))),
                     ),
                   );
                 }

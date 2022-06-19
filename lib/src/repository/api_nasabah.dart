@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:get/get_connect/connect.dart';
@@ -17,6 +16,44 @@ class ApiNasabah extends GetConnect {
     String token = await getToken();
 
     var res = await get('$url/sampah', headers: {'Authorization': token});
+
+    return getRes(res);
+  }
+
+  Future<Response> setorSampah({required dynamic data}) async {
+    String token = await getToken();
+
+    var res = await post(
+      '$url/sampah/setor',
+      (data),
+      headers: {
+        'Authorization': token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    );
+
+    return getRes(res);
+  }
+
+  Future<Response> getHistory() async {
+    String token = await getToken();
+
+    var res = await get(
+      '$url/histori/setor',
+      headers: {'Authorization': token},
+    );
+
+    return getRes(res);
+  }
+
+  Future<Response> getWidraw() async {
+    String token = await getToken();
+
+    var res = await get(
+      '$url/histori/tarik-saldo',
+      headers: {'Authorization': token},
+    );
 
     return getRes(res);
   }

@@ -17,8 +17,6 @@ class _SampahUIState extends State<SampahUI> {
   final conSampah = Get.put(SampahController());
   bool isLoading = false;
 
-  List<SampahCountModel> listSampah = [];
-
   @override
   void initState() {
     super.initState();
@@ -28,12 +26,6 @@ class _SampahUIState extends State<SampahUI> {
   Future<void> getSampah() async {
     setState((() => isLoading = true));
     await conSampah.getSampah();
-    setState(() {
-      listSampah = conSampah.sampah.value
-          .map((e) => SampahCountModel(e.id!, 0))
-          .toList();
-    });
-    conSampah.listSampah.value = listSampah;
     setState((() => isLoading = false));
   }
 
@@ -86,26 +78,32 @@ class _SampahUIState extends State<SampahUI> {
           );
         })),
         Expanded(
-          child: Obx(() {
-            var sampah = conSampah.sampah.value;
+          child: RefreshIndicator(
+            color: secondaryColor,
+            onRefresh: getSampah,
+            child: Obx(() {
+              var sampah = conSampah.sampah.value;
 
-            if (isLoading) {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+              if (isLoading) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
 
-            if (sampah.isEmpty) {
-              return Center(
-                child: Text('Tidak ada sampah'),
-              );
-            } else {
-              return ListView(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                children: sampah.map((e) => _itemSampah(context, e)).toList(),
-              );
-            }
-          }),
+              if (sampah.isEmpty) {
+                return Center(
+                  child: Text('Tidak ada sampah'),
+                );
+              } else {
+                return ListView(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  children: [
+                    ...sampah.map((e) => _itemSampah(context, e)),
+                  ],
+                );
+              }
+            }),
+          ),
         ),
         Obx(() {
           var count = conSampah.listSampah.value.where((e) => e.qty > 0);
@@ -130,7 +128,9 @@ class _SampahUIState extends State<SampahUI> {
                         ),
                       ),
                     );
-                  } else {}
+                  } else {
+                    Get.toNamed(CartUI.routeName);
+                  }
                 },
                 child: Container(
                   height: 54,
@@ -138,7 +138,7 @@ class _SampahUIState extends State<SampahUI> {
                   padding: EdgeInsets.symmetric(horizontal: 80),
                   decoration: BoxDecoration(
                     color: secondaryColor,
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black12,
@@ -165,7 +165,8 @@ class _SampahUIState extends State<SampahUI> {
   }
 
   Widget _itemSampah(BuildContext context, SampahModel sampah) {
-    int qty = listSampah.firstWhere((e) => e.id == sampah.id).qty;
+    int qty =
+        conSampah.listSampah.value.firstWhere((e) => e.id == sampah.id).qty;
 
     return Container(
       margin: EdgeInsets.only(bottom: 10),
@@ -207,11 +208,11 @@ class _SampahUIState extends State<SampahUI> {
               InkWell(
                 onTap: () {
                   if (qty > 0) {
-                    setState(() {
-                      qty--;
-                      listSampah.firstWhere((e) => e.id == sampah.id).qty = qty;
-                    });
-                    conSampah.listSampah.value = listSampah;
+                    qty--;
+                    conSampah.listSampah.value
+                        .firstWhere((e) => e.id == sampah.id)
+                        .qty = qty;
+                    setState(() {});
                   }
                 },
                 child: Card(
@@ -236,11 +237,11 @@ class _SampahUIState extends State<SampahUI> {
               ),
               InkWell(
                 onTap: () {
-                  setState(() {
-                    qty++;
-                    listSampah.firstWhere((e) => e.id == sampah.id).qty = qty;
-                  });
-                  conSampah.listSampah.value = listSampah;
+                  qty++;
+                  conSampah.listSampah.value
+                      .firstWhere((e) => e.id == sampah.id)
+                      .qty = qty;
+                  setState(() {});
                 },
                 child: Card(
                   color: secondaryColor,

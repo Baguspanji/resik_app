@@ -8,7 +8,7 @@ class UserModel {
   Null? longitude;
   String? status;
   String? noTelp;
-  String? saldo;
+  int? saldo;
   Null? image;
   Null? images;
   String? createdAt;

@@ -35,6 +35,8 @@ dependencies:
   fluttertoast: ^8.0.9
   get: ^4.6.1
   intl: ^0.17.0
+  modal_bottom_sheet: ^2.0.1
+  qr_flutter: ^4.0.0
   shared_preferences: ^2.0.13
   shimmer: ^2.0.0
 
