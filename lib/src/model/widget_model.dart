@@ -28,3 +28,10 @@ class NotifNavModel {
 
   NotifNavModel(this.title, {this.items});
 }
+
+class SampahCountModel {
+  final int id;
+  late int qty;
+
+  SampahCountModel(this.id, this.qty);
+}

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:resik_app/src/config/constans_config.dart';
 import 'package:resik_app/src/config/size_config.dart';
 
-Widget customApp(BuildContext context, String title) {
+Widget customApp(BuildContext context, String title,
+    {Widget? child, bool isBack = false}) {
   return Container(
     height: height(context) * 0.12,
     width: width(context),
     alignment: Alignment.bottomCenter,
-    padding: EdgeInsets.symmetric(vertical: 20),
+    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
     decoration: BoxDecoration(
       color: secondaryColor,
       boxShadow: [
@@ -21,7 +23,18 @@ Widget customApp(BuildContext context, String title) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SizedBox(width: width(context) * 0.1),
+        isBack
+            ? SizedBox(
+                width: width(context) * 0.15,
+                child: InkWell(
+                  onTap: () => Get.back(),
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                  ),
+                ),
+              )
+            : SizedBox(width: width(context) * 0.15),
         Text(
           title,
           style: TextStyle(
@@ -30,7 +43,7 @@ Widget customApp(BuildContext context, String title) {
             fontWeight: FontWeight.w500,
           ),
         ),
-        SizedBox(width: width(context) * 0.1),
+        (child == null) ? SizedBox(width: width(context) * 0.15) : child,
       ],
     ),
   );

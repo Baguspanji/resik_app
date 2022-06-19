@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:resik_app/src/config/constans_assets.dart';
 import 'package:resik_app/src/config/constans_config.dart';
 import 'package:resik_app/src/config/size_config.dart';
+import 'package:resik_app/src/controller/auth_controller.dart';
 import 'package:resik_app/src/model/widget_model.dart';
+import 'package:resik_app/src/repository/s_preference.dart';
 import 'package:resik_app/src/ui/nasabah/histori/index.dart';
 import 'package:resik_app/src/ui/nasabah/home/index.dart';
 import 'package:resik_app/src/ui/nasabah/profile/index.dart';
@@ -17,6 +20,8 @@ class NavUI extends StatefulWidget {
 }
 
 class _NavUIState extends State<NavUI> with SingleTickerProviderStateMixin {
+  final conAuth = Get.put(AuthController());
+
   int indexNav = 0;
   late TabController _tabController;
 
@@ -30,6 +35,9 @@ class _NavUIState extends State<NavUI> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    getToken().then((value) {
+      if (value != null) conAuth.isloggedIn.value = true;
+    });
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       setState(() {
@@ -50,45 +58,6 @@ class _NavUIState extends State<NavUI> with SingleTickerProviderStateMixin {
           ProfileUI(),
         ],
       ),
-      floatingActionButton: _tabController.index == 1 || indexNav == 1
-          ? FloatingActionButton(
-              onPressed: () {},
-              backgroundColor: secondaryColor,
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Icon(
-                      Icons.shopping_bag_outlined,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 6,
-                    child: Container(
-                      width: 16,
-                      height: 16,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.8),
-                      ),
-                      child: Text(
-                        '2',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            )
-          : SizedBox(),
       bottomNavigationBar: Container(
         height: 70,
         width: width(context),
@@ -110,10 +79,24 @@ class _NavUIState extends State<NavUI> with SingleTickerProviderStateMixin {
 
   Widget _navItem(BuildContext context, NavModel svg, {bool isActive = false}) {
     return GestureDetector(
-      onTap: () => setState(() {
-        indexNav = listNav.indexOf(svg);
-        _tabController.animateTo(indexNav);
-      }),
+      onTap: () {
+        int index = listNav.indexOf(svg);
+        if (index != 0) {
+          if (conAuth.isloggedIn.value) {
+            setState(() {
+              indexNav = index;
+              _tabController.animateTo(index);
+            });
+          } else {
+            modalLogin('Warning', 'Anda harus login terlebih dahulu');
+          }
+        } else {
+          setState(() {
+            indexNav = index;
+            _tabController.animateTo(index);
+          });
+        }
+      },
       child: Container(
         width: width(context) / 4,
         height: width(context) / 4,

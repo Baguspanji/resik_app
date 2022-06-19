@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:resik_app/src/ui/auth/index.dart';
 import 'size_config.dart';
 import 'dart:ui' as ui;
 
-const globalApi = 'https://';
+const globalApi = 'https://berkah.resik.co.id';
 
 const cardColor = Color(0xFFFAFBFB);
 const primaryColor = Color(0xFF63fbcb);
@@ -65,7 +67,7 @@ OutlineInputBorder outlineInputBorder() {
 }
 
 final formatter = NumberFormat('#,##0', 'id_ID');
-String toRupiah(int number) => 'Rp ${formatter.format(number)}';
+String toRupiah(double number) => 'Rp ${formatter.format(number)}';
 
 String formatTime(DateTime dateTime) {
   return DateFormat('kk:mm:ss').format(dateTime);
@@ -139,6 +141,62 @@ void getToast(String text) {
     backgroundColor: Colors.black45,
     textColor: Colors.white,
     fontSize: 16.0,
+  );
+}
+
+void modalLogin(String title, String content) {
+  Get.defaultDialog(
+    title: title,
+    content: Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Text(content),
+        ),
+        SizedBox(height: 10),
+        ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(secondaryColor),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0),
+              ),
+            ),
+          ),
+          onPressed: () {
+            Get.toNamed(AuthUI.routeName);
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Text("Login Sekarang"),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget button(
+  String text, {
+  required void Function()? onPressed,
+  Color color = secondaryColor,
+  double radius = 18,
+  EdgeInsetsGeometry padding = const EdgeInsets.symmetric(horizontal: 10),
+}) {
+  return ElevatedButton(
+    style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.all(color),
+      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radius),
+        ),
+      ),
+    ),
+    onPressed: onPressed,
+    child: Padding(
+      padding: padding,
+      child: Text(text),
+    ),
   );
 }
 

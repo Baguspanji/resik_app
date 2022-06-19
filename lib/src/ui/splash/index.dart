@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:resik_app/src/config/constans_config.dart';
 import 'package:resik_app/src/config/size_config.dart';
+import 'package:resik_app/src/controller/auth_controller.dart';
+import 'package:resik_app/src/repository/s_preference.dart';
 import 'package:resik_app/src/ui/nasabah/home/index.dart';
 import 'package:resik_app/src/ui/nasabah/nav_ui.dart';
 
@@ -15,6 +17,8 @@ class SplashUI extends StatefulWidget {
 }
 
 class _SplashUIState extends State<SplashUI> {
+  final conAuth = Get.put(AuthController());
+
   @override
   void initState() {
     _init();
@@ -24,13 +28,6 @@ class _SplashUIState extends State<SplashUI> {
   _init() async {
     await Future.delayed(Duration(seconds: 2));
     Get.offAllNamed(NavUI.routeName);
-    // getToken().then((value) {
-    //   if (value != null) {
-    //     Get.offAllNamed(NavUI.routeName);
-    //   } else {
-    //     Get.offAllNamed(AuthUI.routeName);
-    //   }
-    // });
   }
 
   @override

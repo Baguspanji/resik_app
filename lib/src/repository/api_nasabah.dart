@@ -8,40 +8,18 @@ import 'package:get/get_connect/connect.dart';
 import 'package:resik_app/src/config/constans_config.dart';
 import 'package:resik_app/src/repository/s_preference.dart';
 
-class ApiAuth extends GetConnect {
+class ApiNasabah extends GetConnect {
   final String url = '$globalApi/api';
 
-  // ============ Auth
+  // ============ Sampah ============
 
-  Future<Response> login({dynamic data}) async {
-    var res = await post('$url/login', jsonEncode(data), headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    });
-
-    return getRes(res);
-  }
-
-  Future<Response> getUser() async {
+  Future<Response> getSampah() async {
     String token = await getToken();
 
-    var res = await get('$url/user', headers: {'Authorization': token});
+    var res = await get('$url/sampah', headers: {'Authorization': token});
 
     return getRes(res);
   }
-
-  // Future<Response> changePassword({dynamic data}) async {
-  //   String token = await getToken();
-
-  //   var res =
-  //       await post('$url/v1/user/change-password', jsonEncode(data), headers: {
-  //     'Content-Type': 'application/json',
-  //     'Accept': 'application/json',
-  //     'Authorization': 'Bearer $token'
-  //   });
-
-  //   return getRes(res);
-  // }
 
   // Future<http.Response> changeProfile({required XFile data}) async {
   //   String token = await getToken();

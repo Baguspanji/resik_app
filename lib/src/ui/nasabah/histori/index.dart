@@ -69,7 +69,7 @@ class _HistoriUIState extends State<HistoriUI> {
         decoration: isSelected
             ? BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: Colors.white, width: 2),
+                  bottom: BorderSide(color: Colors.white, width: 2),
                 ),
               )
             : BoxDecoration(),
