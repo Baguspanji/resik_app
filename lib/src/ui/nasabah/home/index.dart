@@ -1,9 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:resik_app/src/config/constans_config.dart';
 import 'package:resik_app/src/config/size_config.dart';
-import 'package:resik_app/src/ui/nasabah/components/custom_components.dart';
+import 'package:resik_app/src/controller/product_controller.dart';
+import 'package:resik_app/src/model/product_model.dart';
 
-class HomeUI extends StatelessWidget {
+class HomeUI extends StatefulWidget {
+  @override
+  State<HomeUI> createState() => _HomeUIState();
+}
+
+class _HomeUIState extends State<HomeUI> {
+  final conProduct = Get.put(ProductController());
+
+  @override
+  void initState() {
+    conProduct.getProduct();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -11,106 +26,42 @@ class HomeUI extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(height: 32),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: CustomCacheImageNetworkDecoration(
-                'https://images.unsplash.com/photo-1648737155328-0c0012cf2f20?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-                width: width(context),
-                height: height(context) * 0.18,
-                radius: 8,
-              ),
-            ),
-            SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _itemCircle('Bank Sampah'),
-                  _itemCircle('Seputar Sampah'),
-                  _itemCircle('Kami Hadir'),
-                ],
-              ),
-            ),
-            SizedBox(height: 32),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    'Berita Terkini',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    'Selengkapnya',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.black45,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 16),
-            SizedBox(
+            Container(
               width: width(context),
-              height: height(context) * 0.22,
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                scrollDirection: Axis.horizontal,
-                children: [
-                  _itemNews(context),
-                  _itemNews(context),
-                  _itemNews(context),
-                ],
-              ),
-            ),
-            SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    'Tentang Resik',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    'Selengkapnya',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.black45,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                'Snack',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             SizedBox(height: 16),
-            SizedBox(
-              width: width(context),
-              height: height(context) * 0.22,
-              child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                scrollDirection: Axis.horizontal,
-                children: [
-                  _itemNews(context),
-                  _itemNews(context),
-                  _itemNews(context),
-                ],
-              ),
+            Container(
+              height: width(context) * 0.5,
+              child: Obx(() {
+                final products = conProduct.listProduct.value;
+
+                if (products.isEmpty) {
+                  return Container(
+                    height: width(context) * 0.5,
+                    width: width(context),
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator(
+                      color: Colors.orange,
+                    ),
+                  );
+                }
+
+                return ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    ...products.map((e) => _itemProduct(context, e)),
+                  ],
+                );
+              }),
             ),
             SizedBox(height: 32),
           ],
@@ -119,108 +70,66 @@ class HomeUI extends StatelessWidget {
     );
   }
 
-  Widget _itemNews(BuildContext context) {
-    double sizeWidth = width(context) * 0.6;
-
+  Widget _itemProduct(BuildContext context, ProductModel item) {
     return Container(
-      width: sizeWidth,
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Column(
-        children: [
-          CustomCacheImageNetworkDecoration(
-            'https://images.unsplash.com/photo-1648737155328-0c0012cf2f20?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
-            width: width(context) * 0.6,
-            height: height(context) * 0.12,
-            radius: 8,
-          ),
-          SizedBox(height: 8),
-          Container(
-            width: sizeWidth,
-            child: Text(
-              'Lorem ipsum dolor sit amet consectetur.',
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.justify,
-              style: TextStyle(
-                fontSize: 14,
-                height: 1,
-                color: Colors.black87,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-          SizedBox(height: 4),
-          Container(
-            width: sizeWidth,
-            child: Text(
-              'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam beatae voluptate laborum eveniet placeat, est voluptas. Et, quis! Natus reiciendis molestias nulla.',
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.justify,
-              style: TextStyle(
-                fontSize: 10,
-                height: 1,
-                color: Colors.black45,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
-          SizedBox(height: 4),
-          Container(
-            width: sizeWidth,
-            child: Text(
-              dateFormatEEEEdMMMMyyyy(DateTime.now()),
-              style: TextStyle(
-                fontSize: 10,
-                height: 1,
-                color: Colors.black87,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
+      width: width(context) * 0.4,
+      height: width(context) * 0.5,
+      margin: EdgeInsets.symmetric(horizontal: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black12,
+            offset: Offset(0, 3),
+            blurRadius: 6,
           ),
         ],
       ),
-    );
-  }
-
-  Widget _itemCircle(String title) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 54,
-            height: 54,
+            width: width(context) * 0.4,
+            height: width(context) * 0.3,
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey,
-              image: DecorationImage(
-                image: NetworkImage(
-                    'https://images.unsplash.com/photo-1648737155328-0c0012cf2f20?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80'),
-                fit: BoxFit.cover,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6,
-                  offset: Offset(0, 3),
-                ),
-              ],
+              color: Colors.orange,
+              borderRadius: BorderRadius.circular(10),
             ),
           ),
-          SizedBox(height: 8),
-          Container(
-            width: 80,
-            child: Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                height: 1,
-                color: Colors.black87,
-                fontWeight: FontWeight.w400,
-              ),
+          SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.namaProduk ?? '-',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  item.deskripsi ?? '-',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                SizedBox(height: 6),
+                Text(
+                  toRupiah(double.parse(item.harga ?? "0")),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black45,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

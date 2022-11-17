@@ -35,9 +35,10 @@ class _NavUIState extends State<NavUI> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    getToken().then((value) {
-      if (value != null) conAuth.isloggedIn.value = true;
-    });
+    // getToken().then((value) {
+    // if (value != null)
+    conAuth.isloggedIn.value = true;
+    // });
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
       setState(() {
